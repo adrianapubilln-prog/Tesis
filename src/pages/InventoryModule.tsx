@@ -223,6 +223,7 @@ function ProductForm({ existing, onCancel, onSaved }: { existing: Product | null
     placeholder="Ej. 10.50"
   />
 </div>
+
       {err && <div className="error-text" style={{ marginBottom: 10 }}>{err}</div>}
       <div style={{ display: 'flex', gap: 10 }}>
         <button className="btn btn-primary" disabled={busy} onClick={save}>{busy ? 'Guardando…' : 'Guardar'}</button>

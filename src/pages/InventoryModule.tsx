@@ -65,7 +65,7 @@ function Stock() {
           <label>Buscar producto</label>
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Nombre…" />
         </div>
-        <button className="btn btn-primary" onClick={() => { setEditing(null); setShowForm(true) }}>+ Nuevo producto</button>
+        <button className="btn btn-primary" onClick={() => { setEditing(null); setShowForm(true) }}>+ Añade un nuevo producto</button>
       </div>
 
       {showForm && (

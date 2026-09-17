@@ -168,19 +168,36 @@ function ProductForm({ existing, onCancel, onSaved }: { existing: Product | null
       <h3 style={{ marginBottom: 14 }}>{existing ? 'Editar producto' : 'Nuevo producto'}</h3>
       <div className="field-row">
         <div className="field">
-          <label>Nombre *</label>
+          <label>Nombre</label>
           <input value={name} onChange={(e) => setName(e.target.value)} />
         </div>
         <div className="field">
-          <label>SKU / código</label>
+          <label>Código</label>
           <input value={sku} onChange={(e) => setSku(e.target.value)} />
         </div>
       </div>
+     
       <div className="field-row">
-        <div className="field">
-          <label>Unidad</label>
-          <input value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="unidad, kg, litro…" />
-        </div>
+  <div className="field">
+    <label>Unidad</label>
+    <select value={unit} onChange={(e) => setUnit(e.target.value)}>
+      <option value="">Selecciona una unidad</option>
+      <option value="unidad">Unidad</option>
+      <option value="metro">Metro</option>
+      <option value="kilómetro">Kilómetro</option>
+      <option value="pulgada">Pulgada</option>
+      <option value="yarda">Yarda</option>
+      <option value="kilogramo">Kilogramo</option>
+      <option value="libra">Libra</option>
+      <option value="galón">Galón</option>
+      <option value="onza">Onza</option>
+      <option value="docena">Docena</option>
+      <option value="servicio">Servicio</option>
+      <option value="otro">Otro</option>
+    </select>
+  </div>
+</div>
+    
         <div className="field">
           <label>Stock actual</label>
           <input type="number" step="0.01" value={stock} onChange={(e) => setStock(Number(e.target.value))} />
@@ -196,10 +213,16 @@ function ProductForm({ existing, onCancel, onSaved }: { existing: Product | null
           <input type="number" step="0.01" value={salePrice} onChange={(e) => setSalePrice(Number(e.target.value))} />
         </div>
       </div>
-      <div className="field">
-        <label>Stock mínimo (alerta)</label>
-        <input type="number" step="0.01" value={minStock} onChange={(e) => setMinStock(Number(e.target.value))} />
-      </div>
+    <div className="field">
+  <label>Stock mínimo (alerta)</label>
+  <input
+    type="text"
+    inputMode="decimal"
+    value={minStock}
+    onChange={(e) => setMinStock(e.target.value)}
+    placeholder="Ej. 10.50"
+  />
+</div>
       {err && <div className="error-text" style={{ marginBottom: 10 }}>{err}</div>}
       <div style={{ display: 'flex', gap: 10 }}>
         <button className="btn btn-primary" disabled={busy} onClick={save}>{busy ? 'Guardando…' : 'Guardar'}</button>

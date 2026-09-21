@@ -420,7 +420,7 @@ function QuickModal({ type, onClose, onDone }: { type: string; onClose: () => vo
         <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
           {(type === 'sale' || type === 'purchase' || type === 'stock') && (
             <div className="field">
-              <label>Producto *</label>
+              <label>Producto</label>
               <select value={selProduct} onChange={(e) => {
                 setSelProduct(e.target.value)
                 const p = products.find((x) => x.id === e.target.value)
@@ -438,13 +438,13 @@ function QuickModal({ type, onClose, onDone }: { type: string; onClose: () => vo
           {(type === 'sale' || type === 'purchase' || type === 'stock') && (
             <div className="field-row">
               <div className="field">
-                <label>Cantidad *</label>
+                <label>Cantidad</label>
                 <input type="number" min={1} value={qty} onChange={(e) => setQty(Number(e.target.value))} />
               </div>
               {(type === 'sale' || type === 'purchase') && (
                 <div className="field">
                   <label>{type === 'sale' ? 'Precio unit.' : 'Costo unit.'} ($)</label>
-                  <input type="number" min={0} step="0.01" value={unitPrice} onChange={(e) => setUnitPrice(Number(e.target.value))} />
+                  <input type="number" min={0}  value={unitPrice} onChange={(e) => setUnitPrice(Number(e.target.value))} />
                 </div>
               )}
             </div>
@@ -469,7 +469,7 @@ function QuickModal({ type, onClose, onDone }: { type: string; onClose: () => vo
           {type === 'expense' && (
             <>
               <div className="field">
-                <label>Descripción *</label>
+                <label>Descripción </label>
                 <input value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="Ej. Pago de electricidad" />
               </div>
               <div className="field-row">

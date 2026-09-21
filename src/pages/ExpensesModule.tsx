@@ -9,8 +9,12 @@ import {
 import { fetchSuppliers, type Supplier } from '../lib/purchases'
 import { fetchSales, type Sale } from '../lib/sales'
 import { supabase } from '../lib/supabase'
+import {
+  fetchPayroll, createPayroll, deletePayroll, computeNetPay, formatPeriod, getAvailablePeriods,
+  type PayrollEntry,
+} from '../lib/payroll'
 
-type Tab = 'new' | 'history' | 'categories' | 'reports'
+type Tab = 'new' | 'history' | 'categories' | 'salaries' | 'reports'
 
 export default function ExpensesModule() {
   const [tab, setTab] = useState<Tab>('new')
@@ -24,11 +28,13 @@ export default function ExpensesModule() {
       <div style={{ display: 'flex', gap: 8, borderBottom: '1px solid var(--border)', marginBottom: 20, flexWrap: 'wrap' }}>
         <TabBtn active={tab === 'new'} onClick={() => setTab('new')}>Nuevo gasto</TabBtn>
         <TabBtn active={tab === 'history'} onClick={() => setTab('history')}>Historial</TabBtn>
+        <TabBtn active={tab === 'salaries'} onClick={() => setTab('salaries')}>Salarios</TabBtn>
         <TabBtn active={tab === 'categories'} onClick={() => setTab('categories')}>Categorías</TabBtn>
         <TabBtn active={tab === 'reports'} onClick={() => setTab('reports')}>Reportes</TabBtn>
       </div>
       {tab === 'new' && <NewExpense />}
       {tab === 'history' && <History />}
+      {tab === 'salaries' && <Salaries />}
       {tab === 'categories' && <Categories />}
       {tab === 'reports' && <Reports />}
     </div>
@@ -564,6 +570,313 @@ function Reports() {
               ? `Tu negocio generó $${report.profit.toFixed(2)} de ganancia neta este mes. Los ingresos cubren los gastos${report.income > 0 ? ` con un margen del ${((report.profit / report.income) * 100).toFixed(1)}%` : ''}.`
               : `Este mes los gastos superan a los ingresos por $${Math.abs(report.profit).toFixed(2)}. Revisa tus gastos operativos o aumenta tus ventas.`}
         </p>
+      </div>
+    </div>
+  )
+}
+
+/* ---------- Salarios y remuneraciones ---------- */
+function Salaries() {
+  const { business, user, canEdit } = useAuth()
+  const [entries, setEntries] = useState<PayrollEntry[]>([])
+  const [showForm, setShowForm] = useState(false)
+  const [period, setPeriod] = useState(() => {
+    const n = new Date()
+    return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, '0')}`
+  })
+  const periods = getAvailablePeriods()
+  const readOnly = !canEdit('gastos')
+
+  const load = () => {
+    if (!business) return
+    fetchPayroll(business.id, period).then(setEntries).catch(() => {})
+  }
+  useEffect(load, [business, period])
+
+  const totalNet = entries.reduce((s, e) => s + Number(e.net_pay), 0)
+  const totalBase = entries.reduce((s, e) => s + Number(e.base_salary), 0)
+  const totalExtras = entries.reduce((s, e) => s + Number(e.bonuses) + Number(e.commissions) + Number(e.overtime), 0)
+  const totalDeductions = entries.reduce((s, e) => s + Number(e.deductions) + Number(e.employer_contributions), 0)
+
+  const byDept = useMemo(() => {
+    const map = new Map<string, number>()
+    entries.forEach((e) => map.set(e.department, (map.get(e.department) || 0) + Number(e.net_pay)))
+    const labels: Record<string, string> = { administracion: 'Administración', ventas: 'Ventas', produccion: 'Producción', otro: 'Otro' }
+    return Array.from(map.entries()).map(([k, v]) => ({ name: labels[k] || k, total: v }))
+  }, [entries])
+
+  return (
+    <div>
+      <div className="card" style={{ padding: 16, marginBottom: 16, display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'flex-end' }}>
+        <div className="field" style={{ margin: 0 }}>
+          <label>Período</label>
+          <select value={period} onChange={(e) => setPeriod(e.target.value)}>
+            {periods.map((p) => <option key={p} value={p}>{formatPeriod(p)}</option>)}
+          </select>
+        </div>
+        {!readOnly && (
+          <button className="btn btn-primary" onClick={() => setShowForm(true)}>+ Registrar pago</button>
+        )}
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 16 }}>
+        <div className="card" style={{ padding: 16 }}>
+          <div className="muted" style={{ fontSize: 12, textTransform: 'uppercase' }}>Salarios base</div>
+          <div style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)', marginTop: 4 }}>${totalBase.toFixed(2)}</div>
+        </div>
+        <div className="card" style={{ padding: 16 }}>
+          <div className="muted" style={{ fontSize: 12, textTransform: 'uppercase' }}>Bonos/Comisiones/Extras</div>
+          <div style={{ fontSize: 20, fontWeight: 700, color: '#16A34A', marginTop: 4 }}>${totalExtras.toFixed(2)}</div>
+        </div>
+        <div className="card" style={{ padding: 16 }}>
+          <div className="muted" style={{ fontSize: 12, textTransform: 'uppercase' }}>Deducciones y aportes</div>
+          <div style={{ fontSize: 20, fontWeight: 700, color: '#EF4444', marginTop: 4 }}>${totalDeductions.toFixed(2)}</div>
+        </div>
+        <div className="card" style={{ padding: 16 }}>
+          <div className="muted" style={{ fontSize: 12, textTransform: 'uppercase' }}>Total neto pagado</div>
+          <div style={{ fontSize: 20, fontWeight: 700, color: '#22D0F7', marginTop: 4 }}>${totalNet.toFixed(2)}</div>
+          <div className="muted" style={{ fontSize: 12, marginTop: 2 }}>{entries.length} pago(s)</div>
+        </div>
+      </div>
+
+      {byDept.length > 0 && (
+        <div className="card" style={{ padding: 20, marginBottom: 16 }}>
+          <h3>Salarios por departamento — {formatPeriod(period)}</h3>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 16, marginTop: 12 }}>
+            {byDept.map((d) => (
+              <div key={d.name} style={{ padding: '10px 16px', background: 'var(--surface-2)', borderRadius: 8 }}>
+                <div style={{ fontSize: 12, color: 'var(--text-dim)' }}>{d.name}</div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text)' }}>${d.total.toFixed(2)}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {entries.length === 0 ? (
+        <div className="card muted" style={{ padding: 24, textAlign: 'center' }}>
+          No hay pagos de salarios registrados para {formatPeriod(period)}.
+          {!readOnly && ' Usa "+ Registrar pago" para agregar uno.'}
+        </div>
+      ) : (
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+          <thead>
+            <tr style={{ textAlign: 'left', color: 'var(--text-dim)' }}>
+              <th style={{ padding: '10px 8px' }}>Empleado</th>
+              <th style={{ padding: '10px 8px' }}>Cargo</th>
+              <th style={{ padding: '10px 8px' }}>Depto.</th>
+              <th style={{ padding: '10px 8px' }}>Tipo</th>
+              <th style={{ padding: '10px 8px' }}>Base</th>
+              <th style={{ padding: '10px 8px' }}>Extras</th>
+              <th style={{ padding: '10px 8px' }}>Deducc.</th>
+              <th style={{ padding: '10px 8px' }}>Neto</th>
+              <th style={{ padding: '10px 8px' }}>Fecha</th>
+              { !readOnly && <th></th> }
+            </tr>
+          </thead>
+          <tbody>
+            {entries.map((e) => {
+              const extras = Number(e.bonuses) + Number(e.commissions) + Number(e.overtime)
+              const ded = Number(e.deductions) + Number(e.employer_contributions)
+              const deptLabels: Record<string, string> = { administracion: 'Admin.', ventas: 'Ventas', produccion: 'Prod.', otro: 'Otro' }
+              return (
+                <tr key={e.id} style={{ borderTop: '1px solid var(--border)' }}>
+                  <td style={{ padding: '10px 8px', fontWeight: 600 }}>{e.employee_name}</td>
+                  <td style={{ padding: '10px 8px' }}>{e.position || '—'}</td>
+                  <td style={{ padding: '10px 8px' }}>{deptLabels[e.department] || e.department}</td>
+                  <td style={{ padding: '10px 8px' }}>{e.payment_type}</td>
+                  <td style={{ padding: '10px 8px' }}>${Number(e.base_salary).toFixed(2)}</td>
+                  <td style={{ padding: '10px 8px', color: extras > 0 ? '#16A34A' : 'var(--text-dim)' }}>{extras > 0 ? `${extras.toFixed(2)}` : '—'}</td>
+                  <td style={{ padding: '10px 8px', color: ded > 0 ? '#EF4444' : 'var(--text-dim)' }}>{ded > 0 ? `${ded.toFixed(2)}` : '—'}</td>
+                  <td style={{ padding: '10px 8px', fontWeight: 700, color: '#22D0F7' }}>${Number(e.net_pay).toFixed(2)}</td>
+                  <td style={{ padding: '10px 8px' }}>{e.pay_date}</td>
+                  {!readOnly && (
+                    <td style={{ padding: '10px 8px' }}>
+                      <button className="btn btn-ghost" style={{ padding: '4px 10px', fontSize: 12, color: 'var(--error)' }} onClick={async () => {
+                        if (!confirm('¿Eliminar este registro de salario?')) return
+                        await deletePayroll(e.id)
+                        load()
+                      }}>Eliminar</button>
+                    </td>
+                  )}
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      )}
+
+      {showForm && business && user && (
+        <SalaryForm
+          onClose={() => setShowForm(false)}
+          onSaved={() => { setShowForm(false); load() }}
+          businessId={business.id}
+          userId={user.id}
+          defaultPeriod={period}
+        />
+      )}
+    </div>
+  )
+}
+
+function SalaryForm({ onClose, onSaved, businessId, userId, defaultPeriod }: {
+  onClose: () => void; onSaved: () => void; businessId: string; userId: string; defaultPeriod: string
+}) {
+  const [employeeName, setEmployeeName] = useState('')
+  const [position, setPosition] = useState('')
+  const [department, setDepartment] = useState<PayrollEntry['department']>('administracion')
+  const [paymentType, setPaymentType] = useState<PayrollEntry['payment_type']>('salario')
+  const [baseSalary, setBaseSalary] = useState(0)
+  const [bonuses, setBonuses] = useState(0)
+  const [commissions, setCommissions] = useState(0)
+  const [overtime, setOvertime] = useState(0)
+  const [deductions, setDeductions] = useState(0)
+  const [employerContrib, setEmployerContrib] = useState(0)
+  const [payDate, setPayDate] = useState(new Date().toISOString().slice(0, 10))
+  const [period, setPeriod] = useState(defaultPeriod)
+  const [paymentMethod, setPaymentMethod] = useState<PayrollEntry['payment_method']>('efectivo')
+  const [observations, setObservations] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const netPay = computeNetPay({ base_salary: baseSalary, bonuses, commissions, overtime, deductions, employer_contributions: employerContrib })
+  const periods = getAvailablePeriods()
+
+  const submit = async () => {
+    setError(null)
+    if (!employeeName.trim()) return setError('Ingresa el nombre del empleado.')
+    if (netPay <= 0) return setError('El salario neto debe ser mayor a 0.')
+    setBusy(true)
+    try {
+      await createPayroll(businessId, userId, {
+        employee_name: employeeName.trim(),
+        position: position.trim() || null,
+        department,
+        payment_type: paymentType,
+        base_salary: Number(baseSalary),
+        bonuses: Number(bonuses),
+        commissions: Number(commissions),
+        overtime: Number(overtime),
+        deductions: Number(deductions),
+        employer_contributions: Number(employerContrib),
+        net_pay: netPay,
+        pay_date: payDate,
+        period,
+        payment_method: paymentMethod,
+        observations: observations.trim() || null,
+      })
+      onSaved()
+    } catch (e: any) {
+      setError(e.message || 'No se pudo registrar el pago.')
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div onClick={onClose} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'grid', placeItems: 'center', zIndex: 100, padding: 20 }}>
+      <div className="card" style={{ maxWidth: 560, width: '100%', maxHeight: '85vh', overflowY: 'auto' }} onClick={(e) => e.stopPropagation()}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 20px', borderBottom: '1px solid var(--border)' }}>
+          <h3>Registrar pago de salario</h3>
+          <button className="btn btn-ghost" style={{ padding: '4px 12px' }} onClick={onClose}>×</button>
+        </div>
+        <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div className="field-row">
+            <div className="field">
+              <label>Nombre del empleado *</label>
+              <input value={employeeName} onChange={(e) => setEmployeeName(e.target.value)} placeholder="Ej. Juan Pérez" />
+            </div>
+            <div className="field">
+              <label>Cargo / puesto</label>
+              <input value={position} onChange={(e) => setPosition(e.target.value)} placeholder="Ej. Vendedor" />
+            </div>
+          </div>
+          <div className="field-row">
+            <div className="field">
+              <label>Departamento</label>
+              <select value={department} onChange={(e) => setDepartment(e.target.value as any)}>
+                <option value="administracion">Administración</option>
+                <option value="ventas">Ventas</option>
+                <option value="produccion">Producción</option>
+                <option value="otro">Otro</option>
+              </select>
+            </div>
+            <div className="field">
+              <label>Tipo de pago</label>
+              <select value={paymentType} onChange={(e) => setPaymentType(e.target.value as any)}>
+                <option value="salario">Salario</option>
+                <option value="bono">Bono</option>
+                <option value="comision">Comisión</option>
+                <option value="horas_extra">Horas extra</option>
+              </select>
+            </div>
+          </div>
+          <div className="field-row">
+            <div className="field">
+              <label>Salario base ($)</label>
+              <input type="number" min={0} step="0.01" value={baseSalary} onChange={(e) => setBaseSalary(Number(e.target.value))} />
+            </div>
+            <div className="field">
+              <label>Bonificaciones ($) — opcional</label>
+              <input type="number" min={0} step="0.01" value={bonuses} onChange={(e) => setBonuses(Number(e.target.value))} />
+            </div>
+          </div>
+          <div className="field-row">
+            <div className="field">
+              <label>Comisiones ($) — opcional</label>
+              <input type="number" min={0} step="0.01" value={commissions} onChange={(e) => setCommissions(Number(e.target.value))} />
+            </div>
+            <div className="field">
+              <label>Horas extra ($) — opcional</label>
+              <input type="number" min={0} step="0.01" value={overtime} onChange={(e) => setOvertime(Number(e.target.value))} />
+            </div>
+          </div>
+          <div className="field-row">
+            <div className="field">
+              <label>Descuentos / deducciones ($) — opcional</label>
+              <input type="number" min={0} step="0.01" value={deductions} onChange={(e) => setDeductions(Number(e.target.value))} />
+            </div>
+            <div className="field">
+              <label>Prestaciones / aportes patronales ($) — opcional</label>
+              <input type="number" min={0} step="0.01" value={employerContrib} onChange={(e) => setEmployerContrib(Number(e.target.value))} />
+            </div>
+          </div>
+          <div className="field-row">
+            <div className="field">
+              <label>Fecha de pago</label>
+              <input type="date" value={payDate} onChange={(e) => setPayDate(e.target.value)} />
+            </div>
+            <div className="field">
+              <label>Período</label>
+              <select value={period} onChange={(e) => setPeriod(e.target.value)}>
+                {periods.map((p) => <option key={p} value={p}>{formatPeriod(p)}</option>)}
+              </select>
+            </div>
+          </div>
+          <div className="field-row">
+            <div className="field">
+              <label>Método de pago</label>
+              <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value as any)}>
+                <option value="efectivo">Efectivo</option>
+                <option value="transferencia">Transferencia</option>
+                <option value="cheque">Cheque</option>
+              </select>
+            </div>
+            <div className="field">
+              <label>Observaciones — opcional</label>
+              <input value={observations} onChange={(e) => setObservations(e.target.value)} placeholder="Notas adicionales" />
+            </div>
+          </div>
+          <div style={{ padding: '12px 16px', background: 'rgba(34,208,247,0.1)', borderRadius: 8, border: '1px solid rgba(34,208,247,0.25)' }}>
+            <div style={{ fontSize: 13, color: 'var(--text-dim)' }}>Salario neto calculado automáticamente:</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: '#22D0F7', marginTop: 4 }}>${netPay.toFixed(2)}</div>
+          </div>
+          {error && <div className="error-text">{error}</div>}
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button className="btn btn-primary" disabled={busy} onClick={submit}>{busy ? 'Guardando…' : 'Registrar pago'}</button>
+            <button className="btn btn-ghost" onClick={onClose}>Cancelar</button>
+          </div>
+        </div>
       </div>
     </div>
   )

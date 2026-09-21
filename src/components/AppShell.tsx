@@ -16,7 +16,7 @@ const NAV_ITEMS: NavDef[] = [
   { to: '/clientes-proveedores', label: 'Clientes y Proveedores', module: 'clientes_proveedores' },
   { to: '/usuarios', label: 'Usuarios', module: 'usuarios' },
   { to: '/configuracion', label: 'Configuración', module: 'configuracion' },
-  { label: 'Reportes', module: 'reportes', disabled: true },
+  { to: '/reportes', label: 'Reportes', module: 'reportes' },
   { label: 'Módulo IA', module: 'reportes', disabled: true },
 ]
 

@@ -20,6 +20,10 @@ export default function Landing() {
           <span className="badge">Hecho para El Salvador</span>          <h1 style={{ fontSize: 'clamp(34px, 5vw, 56px)', lineHeight: 1.1, marginTop: 18, fontWeight: 700 }}>
             La plataforma de gestión para <span style={{ color: 'var(--accent)' }}>micro y pequeñas empresas</span>
           </h1>
+          <p className="muted" style={{ fontSize: 18, marginTop: 18, maxWidth: 620, marginInline: 'auto' }}>
+            PYMESV reúne ventas, compras, inventario, gastos, clientes y un asistente con IA en un solo lugar.
+            Registra tu negocio en minutos y empieza a controlar tu flujo de caja.
+          </p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: 28 }}>
             <Link to="/auth" className="btn btn-primary">Crear cuenta gratis</Link>
             <Link to="/auth" className="btn btn-ghost">Ya tengo cuenta</Link>

@@ -10,6 +10,9 @@ import PurchasesModule from './pages/PurchasesModule'
 import ExpensesModule from './pages/ExpensesModule'
 import InventoryModule from './pages/InventoryModule'
 import ClientsSuppliersModule from './pages/ClientsSuppliersModule'
+import UsersModule from './pages/UsersModule'
+import ConfigModule from './pages/ConfigModule'
+import ReportsModule from './pages/ReportsModule'
 import type { ModuleKey } from './lib/supabase'
 
 function Guard({ module, children }: { module: ModuleKey; children: React.ReactNode }) {
@@ -32,6 +35,9 @@ function Protected() {
         <Route path="/gastos" element={<Guard module="gastos"><ExpensesModule /></Guard>} />
         <Route path="/inventario" element={<Guard module="inventario"><InventoryModule /></Guard>} />
         <Route path="/clientes-proveedores" element={<Guard module="clientes_proveedores"><ClientsSuppliersModule /></Guard>} />
+        <Route path="/usuarios" element={<Guard module="usuarios"><UsersModule /></Guard>} />
+        <Route path="/configuracion" element={<Guard module="configuracion"><ConfigModule /></Guard>} />
+        <Route path="/reportes" element={<Guard module="reportes"><ReportsModule /></Guard>} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </AppShell>

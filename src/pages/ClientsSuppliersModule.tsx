@@ -93,7 +93,7 @@ function Clients() {
               <label>Buscar por nombre, teléfono o correo</label>
               <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Buscar…" />
             </div>
-            <button className="btn btn-primary" onClick={() => { setEditing(null); setShowForm(true) }}>+ Nuevo cliente</button>
+            <button className="btn btn-primary" onClick={() => { setEditing(null); setShowForm(true) }}> Añade nuevo cliente</button>
           </div>
 
           {showForm && (

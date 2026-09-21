@@ -1,3 +1,4 @@
+```tsx
 import { useEffect, useState } from 'react'
 import { useAuth } from '../lib/auth'
 import { fetchProducts, type Product } from '../lib/sales'
@@ -19,14 +20,37 @@ export default function InventoryModule() {
       <div style={{ marginBottom: 18 }}>
         <span className="badge">Inventario Inteligente</span>
         <h1 style={{ fontSize: 26, marginTop: 8 }}>Inventario</h1>
-        <p className="muted" style={{ fontSize: 14 }}>Controla tu stock, alertas, movimientos y costo de producción.</p>
+        <p className="muted" style={{ fontSize: 14 }}>
+          Controla tu stock, alertas, movimientos y costo de producción.
+        </p>
       </div>
-      <div style={{ display: 'flex', gap: 8, borderBottom: '1px solid var(--border)', marginBottom: 20, flexWrap: 'wrap' }}>
-        <TabBtn active={tab === 'stock'} onClick={() => setTab('stock')}>Productos</TabBtn>
-        <TabBtn active={tab === 'movements'} onClick={() => setTab('movements')}>Movimientos</TabBtn>
-        <TabBtn active={tab === 'alerts'} onClick={() => setTab('alerts')}>Alertas</TabBtn>
-        {isProductora && <TabBtn active={tab === 'production'} onClick={() => setTab('production')}>Producción</TabBtn>}
+
+      <div style={{
+        display: 'flex',
+        gap: 8,
+        borderBottom: '1px solid var(--border)',
+        marginBottom: 20,
+        flexWrap: 'wrap'
+      }}>
+        <TabBtn active={tab === 'stock'} onClick={() => setTab('stock')}>
+          Productos
+        </TabBtn>
+
+        <TabBtn active={tab === 'movements'} onClick={() => setTab('movements')}>
+          Movimientos
+        </TabBtn>
+
+        <TabBtn active={tab === 'alerts'} onClick={() => setTab('alerts')}>
+          Alertas
+        </TabBtn>
+
+        {isProductora && (
+          <TabBtn active={tab === 'production'} onClick={() => setTab('production')}>
+            Producción
+          </TabBtn>
+        )}
       </div>
+
       {tab === 'stock' && <Stock />}
       {tab === 'movements' && <Movements />}
       {tab === 'alerts' && <Alerts />}
@@ -35,17 +59,35 @@ export default function InventoryModule() {
   )
 }
 
-function TabBtn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+function TabBtn({
+  active,
+  onClick,
+  children
+}: {
+  active: boolean
+  onClick: () => void
+  children: React.ReactNode
+}) {
   return (
-    <button onClick={onClick} style={{
-      padding: '10px 16px', background: 'transparent', border: 'none',
-      borderBottom: active ? '2px solid var(--accent)' : '2px solid transparent',
-      color: active ? 'var(--text)' : 'var(--text-dim)', fontWeight: active ? 600 : 500, cursor: 'pointer',
-    }}>{children}</button>
+    <button
+      onClick={onClick}
+      style={{
+        padding: '10px 16px',
+        background: 'transparent',
+        border: 'none',
+        borderBottom: active ? '2px solid var(--accent)' : '2px solid transparent',
+        color: active ? 'var(--text)' : 'var(--text-dim)',
+        fontWeight: active ? 600 : 500,
+        cursor: 'pointer',
+      }}
+    >
+      {children}
+    </button>
   )
 }
 
 /* ---------- Productos / Stock ---------- */
+
 function Stock() {
   const { business } = useAuth()
   const [products, setProducts] = useState<Product[]>([])
@@ -53,35 +95,102 @@ function Stock() {
   const [editing, setEditing] = useState<Product | null>(null)
   const [showForm, setShowForm] = useState(false)
 
-  const load = () => { if (business) fetchProducts(business.id).then(setProducts).catch(() => {}) }
+  const load = () => {
+    if (business) {
+      fetchProducts(business.id)
+        .then(setProducts)
+        .catch(() => {})
+    }
+  }
+
   useEffect(load, [business])
 
-  const filtered = products.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()))
+  // Genera automáticamente el siguiente código de producto
+  const generateNextSku = () => {
+    if (products.length === 0) return '0001'
+
+    const numbers = products
+      .map((p) => parseInt(p.sku || '', 10))
+      .filter((n) => !isNaN(n))
+
+    const maxNumber = numbers.length > 0 ? Math.max(...numbers) : 0
+
+    return String(maxNumber + 1).padStart(4, '0')
+  }
+
+  const filtered = products.filter((p) =>
+    p.name.toLowerCase().includes(search.toLowerCase())
+  )
 
   return (
     <div>
-      <div style={{ display: 'flex', gap: 12, marginBottom: 16, alignItems: 'flex-end' }}>
+      <div style={{
+        display: 'flex',
+        gap: 12,
+        marginBottom: 16,
+        alignItems: 'flex-end'
+      }}>
         <div className="field" style={{ margin: 0, flex: 1 }}>
           <label>Buscar producto</label>
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Nombre…" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Nombre…"
+          />
         </div>
-        <button className="btn btn-primary" onClick={() => { setEditing(null); setShowForm(true) }}>+ Nuevo producto</button>
+
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            setEditing(null)
+            setShowForm(true)
+          }}
+        >
+          Añade un nuevo producto
+        </button>
       </div>
 
       {showForm && (
         <ProductForm
           existing={editing}
-          onCancel={() => { setShowForm(false); setEditing(null) }}
-          onSaved={() => { setShowForm(false); setEditing(null); load() }}
+          nextSku={generateNextSku()}
+          onCancel={() => {
+            setShowForm(false)
+            setEditing(null)
+          }}
+          onSaved={() => {
+            setShowForm(false)
+            setEditing(null)
+            load()
+          }}
         />
       )}
 
       {filtered.length === 0 && !showForm ? (
-        <div className="card muted" style={{ padding: 24, textAlign: 'center' }}>No hay productos. Agrega tu primer producto.</div>
+        <div
+          className="card muted"
+          style={{
+            padding: 24,
+            textAlign: 'center'
+          }}
+        >
+          No hay productos. Agrega tu primer producto.
+        </div>
       ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+        <table
+          style={{
+            width: '100%',
+            borderCollapse: 'collapse',
+            fontSize: 14
+          }}
+        >
           <thead>
-            <tr style={{ textAlign: 'left', color: 'var(--text-dim)' }}>
+            <tr
+              style={{
+                textAlign: 'left',
+                color: 'var(--text-dim)'
+              }}
+            >
               <th style={{ padding: '10px 8px' }}>Producto</th>
               <th style={{ padding: '10px 8px' }}>SKU</th>
               <th style={{ padding: '10px 8px' }}>Costo</th>
@@ -92,28 +201,106 @@ function Stock() {
               <th></th>
             </tr>
           </thead>
+
           <tbody>
             {filtered.map((p) => {
               const low = p.stock <= p.min_stock
+
               return (
-                <tr key={p.id} style={{ borderTop: '1px solid var(--border)' }}>
-                  <td style={{ padding: '10px 8px' }}>{p.name}</td>
-                  <td style={{ padding: '10px 8px', color: 'var(--text-dim)' }}>{p.sku || '—'}</td>
-                  <td style={{ padding: '10px 8px' }}>${Number(p.cost).toFixed(2)}</td>
-                  <td style={{ padding: '10px 8px' }}>${Number(p.sale_price).toFixed(2)}</td>
-                  <td style={{ padding: '10px 8px', fontWeight: 600, color: low ? 'var(--warning)' : 'var(--text)' }}>{p.stock} {p.unit}</td>
-                  <td style={{ padding: '10px 8px', color: 'var(--text-dim)' }}>{p.min_stock}</td>
+                <tr
+                  key={p.id}
+                  style={{
+                    borderTop: '1px solid var(--border)'
+                  }}
+                >
                   <td style={{ padding: '10px 8px' }}>
-                    <span style={{ fontSize: 12, padding: '2px 8px', borderRadius: 6, color: low ? 'var(--warning)' : 'var(--success)' }}>
+                    {p.name}
+                  </td>
+
+                  <td
+                    style={{
+                      padding: '10px 8px',
+                      color: 'var(--text-dim)'
+                    }}
+                  >
+                    {p.sku || '—'}
+                  </td>
+
+                  <td style={{ padding: '10px 8px' }}>
+                    ${Number(p.cost).toFixed(2)}
+                  </td>
+
+                  <td style={{ padding: '10px 8px' }}>
+                    ${Number(p.sale_price).toFixed(2)}
+                  </td>
+
+                  <td
+                    style={{
+                      padding: '10px 8px',
+                      fontWeight: 600,
+                      color: low ? 'var(--warning)' : 'var(--text)'
+                    }}
+                  >
+                    {p.stock} {p.unit}
+                  </td>
+
+                  <td
+                    style={{
+                      padding: '10px 8px',
+                      color: 'var(--text-dim)'
+                    }}
+                  >
+                    {p.min_stock}
+                  </td>
+
+                  <td style={{ padding: '10px 8px' }}>
+                    <span
+                      style={{
+                        fontSize: 12,
+                        padding: '2px 8px',
+                        borderRadius: 6,
+                        color: low ? 'var(--warning)' : 'var(--success)'
+                      }}
+                    >
                       {low ? 'Bajo' : 'OK'}
                     </span>
                   </td>
-                  <td style={{ padding: '10px 8px', whiteSpace: 'nowrap' }}>
-                    <button className="btn btn-ghost" style={{ padding: '4px 10px', fontSize: 12 }} onClick={() => { setEditing(p); setShowForm(true) }}>Editar</button>
-                    <button className="btn btn-ghost" style={{ padding: '4px 10px', fontSize: 12, color: 'var(--error)' }} onClick={async () => {
-                      if (!confirm(`¿Eliminar "${p.name}"?`)) return
-                      await deleteProduct(p.id); load()
-                    }}>Eliminar</button>
+
+                  <td
+                    style={{
+                      padding: '10px 8px',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    <button
+                      className="btn btn-ghost"
+                      style={{
+                        padding: '4px 10px',
+                        fontSize: 12
+                      }}
+                      onClick={() => {
+                        setEditing(p)
+                        setShowForm(true)
+                      }}
+                    >
+                      Editar
+                    </button>
+
+                    <button
+                      className="btn btn-ghost"
+                      style={{
+                        padding: '4px 10px',
+                        fontSize: 12,
+                        color: 'var(--error)'
+                      }}
+                      onClick={async () => {
+                        if (!confirm(`¿Eliminar "${p.name}"?`)) return
+                        await deleteProduct(p.id)
+                        load()
+                      }}
+                    >
+                      Eliminar
+                    </button>
                   </td>
                 </tr>
               )
@@ -125,10 +312,25 @@ function Stock() {
   )
 }
 
-function ProductForm({ existing, onCancel, onSaved }: { existing: Product | null; onCancel: () => void; onSaved: () => void }) {
+function ProductForm({
+  existing,
+  nextSku,
+  onCancel,
+  onSaved
+}: {
+  existing: Product | null
+  nextSku: string
+  onCancel: () => void
+  onSaved: () => void
+}) {
   const { business } = useAuth()
+
   const [name, setName] = useState(existing?.name || '')
-  const [sku, setSku] = useState(existing?.sku || '')
+  
+  // Si es un producto nuevo usa el siguiente código automático.
+  // Si es una edición conserva el código existente.
+  const [sku, setSku] = useState(existing?.sku || nextSku)
+
   const [unit, setUnit] = useState(existing?.unit || 'unidad')
   const [cost, setCost] = useState(existing?.cost || 0)
   const [salePrice, setSalePrice] = useState(existing?.sale_price || 0)
@@ -139,9 +341,15 @@ function ProductForm({ existing, onCancel, onSaved }: { existing: Product | null
 
   const save = async () => {
     setErr(null)
+
     if (!business) return
-    if (!name.trim()) return setErr('Nombre obligatorio.')
+
+    if (!name.trim()) {
+      return setErr('Nombre obligatorio.')
+    }
+
     setBusy(true)
+
     try {
       const data = {
         name: name.trim(),
@@ -153,8 +361,13 @@ function ProductForm({ existing, onCancel, onSaved }: { existing: Product | null
         min_stock: Number(minStock) || 0,
         active: true,
       }
-      if (existing) await updateProduct(existing.id, data)
-      else await createProduct(business.id, data)
+
+      if (existing) {
+        await updateProduct(existing.id, data)
+      } else {
+        await createProduct(business.id, data)
+      }
+
       onSaved()
     } catch (e: any) {
       setErr(e.message)
@@ -162,6 +375,119 @@ function ProductForm({ existing, onCancel, onSaved }: { existing: Product | null
       setBusy(false)
     }
   }
+
+  return (
+    <div
+      className="card"
+      style={{
+        padding: 20,
+        marginBottom: 16,
+        maxWidth: 560
+      }}
+    >
+      <h3 style={{ marginBottom: 14 }}>
+        {existing ? 'Editar producto' : 'Nuevo producto'}
+      </h3>
+
+      <div className="field-row">
+        <div className="field">
+          <label>Nombre *</label>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+
+        <div className="field">
+          <label>Código</label>
+          <input
+            value={sku}
+            readOnly
+          />
+        </div>
+      </div>
+
+      <div className="field-row">
+        <div className="field">
+          <label>Unidad</label>
+          <input
+            value={unit}
+            onChange={(e) => setUnit(e.target.value)}
+            placeholder="unidad, kg, litro…"
+          />
+        </div>
+
+        <div className="field">
+          <label>Stock actual</label>
+          <input
+            type="number"
+            step="0.01"
+            value={stock}
+            onChange={(e) => setStock(Number(e.target.value))}
+          />
+        </div>
+      </div>
+
+      <div className="field-row">
+        <div className="field">
+          <label>Costo unitario ($)</label>
+          <input
+            type="number"
+            step="0.01"
+            value={cost}
+            onChange={(e) => setCost(Number(e.target.value))}
+          />
+        </div>
+
+        <div className="field">
+          <label>Precio de venta ($)</label>
+          <input
+            type="number"
+            step="0.01"
+            value={salePrice}
+            onChange={(e) => setSalePrice(Number(e.target.value))}
+          />
+        </div>
+      </div>
+
+      <div className="field">
+        <label>Stock mínimo (alerta)</label>
+        <input
+          type="number"
+          step="0.01"
+          value={minStock}
+          onChange={(e) => setMinStock(Number(e.target.value))}
+        />
+      </div>
+
+      {err && (
+        <div
+          className="error-text"
+          style={{ marginBottom: 10 }}
+        >
+          {err}
+        </div>
+      )}
+
+      <div style={{ display: 'flex', gap: 10 }}>
+        <button
+          className="btn btn-primary"
+          disabled={busy}
+          onClick={save}
+        >
+          {busy ? 'Guardando…' : 'Guardar'}
+        </button>
+
+        <button
+          className="btn btn-ghost"
+          onClick={onCancel}
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  )
+}
 
   return (
     <div className="card" style={{ padding: 20, marginBottom: 16, maxWidth: 560 }}>
@@ -172,7 +498,7 @@ function ProductForm({ existing, onCancel, onSaved }: { existing: Product | null
           <input value={name} onChange={(e) => setName(e.target.value)} />
         </div>
         <div className="field">
-          <label>SKU / código</label>
+          <label>Código</label>
           <input value={sku} onChange={(e) => setSku(e.target.value)} />
         </div>
       </div>

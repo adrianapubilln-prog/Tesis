@@ -195,9 +195,16 @@ function ProductForm({ existing, nextSku, onCancel, onSaved }: {
       </div>
       <div className="field-row">
         <div className="field">
-          <label>Unidad</label>
-          <input value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="unidad, kg, litro…" />
-        </div>
+  <label>Unidad</label>
+  <select value={unit} onChange={(e) => setUnit(e.target.value)}>
+    <option value="libra">Libra (lb)</option>
+    <option value="yarda">Yarda (yd)</option>
+    <option value="litro">Litro (L)</option>
+    <option value="unidad">Unidad</option>
+    <option value="servicio">Servicio</option>
+    <option value="otro">Otro</option>
+  </select>
+</div>
         <div className="field">
           <label>Stock actual</label>
           <input type="number" step="0.01" value={stock} onChange={(e) => setStock(Number(e.target.value))} />

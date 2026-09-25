@@ -212,13 +212,13 @@ function ProductForm({ existing, nextSku, onCancel, onSaved }: {
           <input type="number" step="0.01" value={stock} onChange={(e) => setStock(Number(e.target.value))} />
         </div>
       </div>
-      <div className="field-row">
-        <div className="field">
-          <label>Costo unitario ($)</label>
+<div className="field-row">
+  <div className="field">
+    <label>Costo unitario ($)</label>
           <input type="number" step="0.01" value={cost} onChange={(e) => setCost(Number(e.target.value))} />
         </div>
         
-      <div className="field">
+        <div className="field">
   <label>Precio de venta ($)</label>
   <input
     type="number"
@@ -239,6 +239,8 @@ function ProductForm({ existing, nextSku, onCancel, onSaved }: {
     placeholder="0.00"
   />
 </div>
+  </div>    
+
       <div className="field">
         <label>Stock mínimo (alerta)</label>
         <input type="number" step="0.01" value={minStock} onChange={(e) => setMinStock(Number(e.target.value))} />

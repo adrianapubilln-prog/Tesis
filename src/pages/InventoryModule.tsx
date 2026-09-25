@@ -76,7 +76,7 @@ function Stock() {
           <label>Buscar producto</label>
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Nombre…" />
         </div>
-        <button className="btn btn-primary" onClick={() => { setEditing(null); setShowForm(true) }}> Añade un uevo producto</button>
+        <button className="btn btn-primary" onClick={() => { setEditing(null); setShowForm(true) }}> Añade un nuevo producto</button>
       </div>
 
       {showForm && (
@@ -185,7 +185,7 @@ function ProductForm({ existing, nextSku, onCancel, onSaved }: {
       <h3 style={{ marginBottom: 14 }}>{existing ? 'Editar producto' : 'Nuevo producto'}</h3>
       <div className="field-row">
         <div className="field">
-          <label>Nombre *</label>
+          <label>Nombre</label>
           <input value={name} onChange={(e) => setName(e.target.value)} />
         </div>
         <div className="field">

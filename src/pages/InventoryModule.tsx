@@ -194,7 +194,8 @@ function ProductForm({ existing, nextSku, onCancel, onSaved }: {
           </div>
       </div>
       <div className="field-row">
-        <div className="field">
+        
+ <div className="field">
   <label>Unidad</label>
   <select value={unit} onChange={(e) => setUnit(e.target.value)}>
     <option value="libra">Libra (lb)</option>
@@ -205,6 +206,7 @@ function ProductForm({ existing, nextSku, onCancel, onSaved }: {
     <option value="otro">Otro</option>
   </select>
 </div>
+
         <div className="field">
           <label>Stock actual</label>
           <input type="number" step="0.01" value={stock} onChange={(e) => setStock(Number(e.target.value))} />
@@ -215,11 +217,28 @@ function ProductForm({ existing, nextSku, onCancel, onSaved }: {
           <label>Costo unitario ($)</label>
           <input type="number" step="0.01" value={cost} onChange={(e) => setCost(Number(e.target.value))} />
         </div>
-        <div className="field">
-          <label>Precio de venta ($)</label>
-          <input type="number" step="0.01" value={salePrice} onChange={(e) => setSalePrice(Number(e.target.value))} />
-        </div>
-      </div>
+        
+      <div className="field">
+  <label>Precio de venta ($)</label>
+  <input
+    type="number"
+    min="0.01"
+    step="0.01"
+    value={salePrice}
+    onChange={(e) => {
+      const value = Number(e.target.value)
+      if (value > 0) {
+        setSalePrice(value)
+      }
+    }}
+    onKeyDown={(e) => {
+      if (e.key === "-" || e.key === "e") {
+        e.preventDefault()
+      }
+    }}
+    placeholder="0.00"
+  />
+</div>
       <div className="field">
         <label>Stock mínimo (alerta)</label>
         <input type="number" step="0.01" value={minStock} onChange={(e) => setMinStock(Number(e.target.value))} />

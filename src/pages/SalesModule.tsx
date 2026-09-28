@@ -215,7 +215,7 @@ function NewSale() {
             <input type="number" min={1} step="1" value={qty} onChange={(e) => setQty(Number(e.target.value))} />
           </div>
           <div className="field" style={{ display: 'flex', alignItems: 'flex-end' }}>
-            <button className="btn btn-ghost" style={{ width: '100%' }} onClick={addItem}>+ Agregar</button>
+            <button className="btn btn-ghost" style={{ width: '100%' }} onClick={addItem}>+ Agregar venta</button>
           </div>
         </div>
 

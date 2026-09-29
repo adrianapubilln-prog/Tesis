@@ -124,12 +124,12 @@ export default function Onboarding() {
         {step === 1 && (
           <div>
             <div className="field">
-              <label>Nombre del negocio *</label>
+              <label>Nombre del negocio</label>
               <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Ej. Mi Tienda SV" />
             </div>
             <div className="field-row">
               <div className="field">
-                <label>Teléfono *</label>
+                <label>Teléfono</label>
                 <input value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="0000-0000" />
               </div>
               <div className="field">
@@ -138,7 +138,7 @@ export default function Onboarding() {
               </div>
             </div>
             <div className="field">
-              <label>Dirección *</label>
+              <label>Dirección</label>
               <input value={address} onChange={(e) => setAddress(e.target.value)} placeholder="Departamento, municipio, calle" />
             </div>
             <div className="field-row">
@@ -160,11 +160,11 @@ export default function Onboarding() {
         {step === 2 && (
           <div>
             <div className="field">
-              <label>Nombre completo del administrador *</label>
+              <label>Nombre completo del administrador</label>
               <input value={adminName} onChange={(e) => setAdminName(e.target.value)} placeholder="Tu nombre" />
             </div>
             <div className="field">
-              <label>Correo del administrador *</label>
+              <label>Correo del administrador</label>
               <input type="email" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} />
             </div>
             <div className="field">

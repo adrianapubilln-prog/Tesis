@@ -453,106 +453,554 @@ function StatusBadge({ status }: { status: string }) {
   return <span style={{ padding: '3px 10px', borderRadius: 999, fontSize: 12, fontWeight: 600, color: s.c, background: s.bg }}>{status}</span>
 }
 
-/* ---------- Devoluciones ---------- */
+/* ---------- Devoluciones de compras ---------- */
 function Returns() {
   const { business, user } = useAuth()
+
   const [purchases, setPurchases] = useState<Purchase[]>([])
   const [selPurchase, setSelPurchase] = useState('')
   const [items, setItems] = useState<PurchaseItem[]>([])
   const [selItem, setSelItem] = useState('')
+
   const [qty, setQty] = useState(1)
-  const [reason, setReason] = useState('')
+  const [unitCost, setUnitCost] = useState(0)
   const [refund, setRefund] = useState(0)
+
+  const [reason, setReason] = useState('')
+
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState<string | null>(null)
   const [err, setErr] = useState<string | null>(null)
 
+  /* --------------------------------
+     Cargar compras
+  -------------------------------- */
   useEffect(() => {
     if (!business) return
-    fetchPurchases(business.id).then(setPurchases).catch(() => {})
+
+    fetchPurchases(business.id)
+      .then(setPurchases)
+      .catch(() => {
+        setErr('No se pudieron cargar las compras.')
+      })
   }, [business])
 
+  /* --------------------------------
+     Cargar productos de la compra
+  -------------------------------- */
   useEffect(() => {
-    if (!selPurchase) { setItems([]); return }
-    fetchPurchaseItems(selPurchase).then(setItems).catch(() => {})
+    if (!selPurchase) {
+      setItems([])
+      setSelItem('')
+      setQty(1)
+      setUnitCost(0)
+      setRefund(0)
+      return
+    }
+
+    fetchPurchaseItems(selPurchase)
+      .then(setItems)
+      .catch(() => {
+        setErr('No se pudieron cargar los productos de la compra.')
+      })
   }, [selPurchase])
 
+  /* --------------------------------
+     Producto seleccionado
+  -------------------------------- */
   useEffect(() => {
-    const it = items.find((i) => i.id === selItem)
-    if (it) { setQty(it.quantity); setRefund(it.total) }
+    const item = items.find(
+      (i) => i.id === selItem
+    )
+
+    if (!item) {
+      setQty(1)
+      setUnitCost(0)
+      setRefund(0)
+      return
+    }
+
+    /*
+      Calculamos el costo unitario.
+
+      Ejemplo:
+
+      Cantidad comprada: 10
+      Total: $100
+
+      Costo unitario:
+      $100 / 10 = $10
+    */
+
+    const costPerUnit =
+      Number(item.quantity) > 0
+        ? Number(item.total) / Number(item.quantity)
+        : 0
+
+    setUnitCost(costPerUnit)
+
+    // Por defecto devolver 1 unidad
+    setQty(1)
+
+    // Reembolso de una unidad
+    setRefund(
+      Number(costPerUnit.toFixed(2))
+    )
   }, [selItem, items])
 
+  /* --------------------------------
+     Cambiar cantidad
+  -------------------------------- */
+  const handleQuantityChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const item = items.find(
+      (i) => i.id === selItem
+    )
+
+    if (!item) return
+
+    let newQty = Number(e.target.value)
+
+    if (!Number.isFinite(newQty) || newQty < 1) {
+      newQty = 1
+    }
+
+    // No permitir devolver más de lo comprado
+    if (newQty > Number(item.quantity)) {
+      newQty = Number(item.quantity)
+    }
+
+    setQty(newQty)
+
+    // Reembolso automático
+    const totalRefund =
+      unitCost * newQty
+
+    setRefund(
+      Number(totalRefund.toFixed(2))
+    )
+  }
+
+  /* --------------------------------
+     Registrar devolución
+  -------------------------------- */
   const submit = async () => {
-    setErr(null); setMsg(null)
-    if (!business || !user) return
-    if (!selPurchase) return setErr('Selecciona una compra.')
-    if (!selItem) return setErr('Selecciona un producto a devolver.')
-    const it = items.find((i) => i.id === selItem)
-    if (!it) return setErr('Producto no encontrado.')
-    if (qty > it.quantity) return setErr(`La cantidad excede lo comprado (${it.quantity}).`)
+    setErr(null)
+    setMsg(null)
+
+    if (!business || !user) {
+      setErr(
+        'No se encontró la información del usuario o negocio.'
+      )
+      return
+    }
+
+    if (!selPurchase) {
+      setErr('Selecciona una compra.')
+      return
+    }
+
+    if (!selItem) {
+      setErr(
+        'Selecciona el producto que deseas devolver.'
+      )
+      return
+    }
+
+    const item = items.find(
+      (i) => i.id === selItem
+    )
+
+    if (!item) {
+      setErr('Producto no encontrado.')
+      return
+    }
+
+    if (qty < 1) {
+      setErr(
+        'La cantidad debe ser mayor a 0.'
+      )
+      return
+    }
+
+    if (qty > Number(item.quantity)) {
+      setErr(
+        `No puedes devolver ${qty} unidades. La compra solamente contiene ${item.quantity}.`
+      )
+      return
+    }
+
+    if (refund <= 0) {
+      setErr(
+        'El monto del reembolso debe ser mayor a $0.00.'
+      )
+      return
+    }
+
     try {
       setBusy(true)
-      await createPurchaseReturn(business.id, user.id, {
-        purchase_id: selPurchase,
-        purchase_item_id: it.id || null,
-        product_id: it.product_id,
-        name: it.name,
-        quantity: qty,
-        reason,
-        refund_amount: refund,
-      })
-      setMsg('Devolución registrada. Inventario ajustado.')
-      setSelPurchase(''); setSelItem(''); setQty(1); setReason(''); setRefund(0)
+
+      await createPurchaseReturn(
+        business.id,
+        user.id,
+        {
+          purchase_id: selPurchase,
+          purchase_item_id: item.id || null,
+          product_id: item.product_id,
+          name: item.name,
+          quantity: qty,
+          reason: reason.trim(),
+          refund_amount: Number(
+            refund.toFixed(2)
+          ),
+        }
+      )
+
+      setMsg(
+        `Devolución registrada correctamente. Se devolvieron ${qty} unidad${
+          qty !== 1 ? 'es' : ''
+        } de "${item.name}" por $${refund.toFixed(2)}.`
+      )
+
+      // Limpiar formulario
+      setSelPurchase('')
+      setSelItem('')
+      setItems([])
+      setQty(1)
+      setUnitCost(0)
+      setRefund(0)
+      setReason('')
+
     } catch (e: any) {
-      setErr(e.message || 'No se pudo registrar la devolución.')
+      setErr(
+        e?.message ||
+        'No se pudo registrar la devolución.'
+      )
     } finally {
       setBusy(false)
     }
   }
 
   return (
-    <div className="card" style={{ padding: 20, maxWidth: 640 }}>
-      <h3 style={{ marginBottom: 14 }}>Devolución de compra</h3>
-      <p className="muted" style={{ fontSize: 13, marginBottom: 14 }}>
-        Selecciona la compra y el producto a devolver al proveedor. El inventario se reduce.
+    <div
+      className="card"
+      style={{
+        padding: 20,
+        maxWidth: 700,
+      }}
+    >
+      <h3 style={{ marginBottom: 8 }}>
+        Devolución de compra
+      </h3>
+
+      <p
+        className="muted"
+        style={{
+          fontSize: 13,
+          marginBottom: 20,
+        }}
+      >
+        Selecciona la compra, el producto y la
+        cantidad que deseas devolver al proveedor.
+        El monto del reembolso se calculará
+        automáticamente según el costo de compra.
       </p>
+
+      {/* ==========================
+          COMPRA
+      ========================== */}
       <div className="field">
         <label>Compra</label>
-        <select value={selPurchase} onChange={(e) => setSelPurchase(e.target.value)}>
-          <option value="">— Selecciona —</option>
-          {purchases.map((p) => (
-            <option key={p.id} value={p.id}>{p.purchase_date} · {p.supplier?.contact_name || 'Sin proveedor'} · ${Number(p.total).toFixed(2)}</option>
+
+        <select
+          value={selPurchase}
+          onChange={(e) => {
+            setSelPurchase(e.target.value)
+            setErr(null)
+            setMsg(null)
+          }}
+        >
+          <option value="">
+            — Selecciona una compra —
+          </option>
+
+          {purchases.map((purchase) => (
+            <option
+              key={purchase.id}
+              value={purchase.id}
+            >
+              {purchase.purchase_date}
+              {' · '}
+              {purchase.supplier?.contact_name ||
+                'Sin proveedor'}
+              {' · '}
+              ${Number(
+                purchase.total
+              ).toFixed(2)}
+            </option>
           ))}
         </select>
       </div>
+
+      {/* ==========================
+          PRODUCTO
+      ========================== */}
       {selPurchase && (
         <div className="field">
-          <label>Producto a devolver</label>
-          <select value={selItem} onChange={(e) => setSelItem(e.target.value)}>
-            <option value="">— Selecciona —</option>
-            {items.map((it) => (
-              <option key={it.id} value={it.id}>{it.name} (compró {it.quantity})</option>
+          <label>
+            Producto de la compra
+          </label>
+
+          <select
+            value={selItem}
+            onChange={(e) => {
+              setSelItem(e.target.value)
+              setErr(null)
+              setMsg(null)
+            }}
+          >
+            <option value="">
+              — Selecciona un producto —
+            </option>
+
+            {items.map((item) => (
+              <option
+                key={item.id}
+                value={item.id}
+              >
+                {item.name}
+                {' · '}
+                {item.quantity} comprado(s)
+                {' · '}
+                ${Number(
+                  item.total
+                ).toFixed(2)}
+              </option>
             ))}
           </select>
         </div>
       )}
-      <div className="field-row">
-        <div className="field">
-          <label>Cantidad</label>
-          <input type="number" min={1} value={qty} onChange={(e) => setQty(Number(e.target.value))} />
-        </div>
-        <div className="field">
-          <label>Monto a reembolsar ($)</label>
-          <input type="number" min={0} step="0.01" value={refund} onChange={(e) => setRefund(Number(e.target.value))} />
-        </div>
-      </div>
+
+      {/* ==========================
+          INFORMACIÓN DEL PRODUCTO
+      ========================== */}
+      {selItem && (
+        <>
+          <div
+            style={{
+              background:
+                'var(--bg-secondary)',
+              borderRadius: 8,
+              padding: 14,
+              marginBottom: 16,
+            }}
+          >
+            {(() => {
+              const item = items.find(
+                (i) => i.id === selItem
+              )
+
+              if (!item) return null
+
+              return (
+                <>
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent:
+                        'space-between',
+                      marginBottom: 8,
+                    }}
+                  >
+                    <span className="muted">
+                      Producto
+                    </span>
+
+                    <strong>
+                      {item.name}
+                    </strong>
+                  </div>
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent:
+                        'space-between',
+                      marginBottom: 8,
+                    }}
+                  >
+                    <span className="muted">
+                      Cantidad comprada
+                    </span>
+
+                    <strong>
+                      {item.quantity}
+                    </strong>
+                  </div>
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent:
+                        'space-between',
+                      marginBottom: 8,
+                    }}
+                  >
+                    <span className="muted">
+                      Costo unitario
+                    </span>
+
+                    <strong>
+                      ${unitCost.toFixed(2)}
+                    </strong>
+                  </div>
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent:
+                        'space-between',
+                    }}
+                  >
+                    <span className="muted">
+                      Total comprado
+                    </span>
+
+                    <strong>
+                      ${Number(
+                        item.total
+                      ).toFixed(2)}
+                    </strong>
+                  </div>
+                </>
+              )
+            })()}
+          </div>
+
+          {/* ==========================
+              CANTIDAD
+          ========================== */}
+          <div className="field">
+            <label>
+              Cantidad a devolver
+            </label>
+
+            <input
+              type="number"
+              min={1}
+              max={
+                items.find(
+                  (i) => i.id === selItem
+                )?.quantity || 1
+              }
+              step={1}
+              value={qty}
+              onChange={
+                handleQuantityChange
+              }
+            />
+
+            <small className="muted">
+              Máximo disponible:
+              {' '}
+              {
+                items.find(
+                  (i) => i.id === selItem
+                )?.quantity || 0
+              }
+              {' '}
+              unidad(es)
+            </small>
+          </div>
+
+          {/* ==========================
+              REEMBOLSO AUTOMÁTICO
+          ========================== */}
+          <div className="field">
+            <label>
+              Monto a reembolsar ($)
+            </label>
+
+            <input
+              type="number"
+              value={refund.toFixed(2)}
+              readOnly
+            />
+
+            <small className="muted">
+              {qty} × $
+              {unitCost.toFixed(2)}
+              {' = '}
+              <strong>
+                ${refund.toFixed(2)}
+              </strong>
+            </small>
+          </div>
+        </>
+      )}
+
+      {/* ==========================
+          MOTIVO
+      ========================== */}
       <div className="field">
-        <label>Motivo</label>
-        <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Defecto, error, etc." />
+        <label>
+          Motivo de la devolución
+        </label>
+
+        <input
+          value={reason}
+          onChange={(e) =>
+            setReason(e.target.value)
+          }
+          placeholder="Producto defectuoso, error en la compra, etc."
+        />
       </div>
-      {err && <div className="error-text" style={{ marginBottom: 10 }}>{err}</div>}
-      {msg && <div style={{ color: 'var(--success)', fontSize: 13, marginBottom: 10 }}>{msg}</div>}
-      <button className="btn btn-primary" disabled={busy} onClick={submit}>{busy ? 'Procesando…' : 'Registrar devolución'}</button>
+
+      {/* ==========================
+          MENSAJES
+      ========================== */}
+      {err && (
+        <div
+          className="error-text"
+          style={{
+            marginBottom: 10,
+          }}
+        >
+          {err}
+        </div>
+      )}
+
+      {msg && (
+        <div
+          style={{
+            color: 'var(--success)',
+            fontSize: 13,
+            marginBottom: 10,
+          }}
+        >
+          {msg}
+        </div>
+      )}
+
+      {/* ==========================
+          BOTÓN
+      ========================== */}
+      <button
+        className="btn btn-primary"
+        disabled={
+          busy ||
+          !selPurchase ||
+          !selItem ||
+          qty < 1 ||
+          refund <= 0
+        }
+        onClick={submit}
+      >
+        {busy
+          ? 'Procesando…'
+          : 'Registrar devolución'}
+      </button>
     </div>
   )
 }

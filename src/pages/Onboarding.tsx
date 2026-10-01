@@ -149,7 +149,7 @@ export default function Onboarding() {
               <div className="field">
                 <label>Tipo de negocio</label>
                 <select value={bizType} onChange={(e) => setBizType(e.target.value as BizType)}>
-                  <option value="comercial">Comercial (revende productos)</option>
+                  <option value="comercial">Comercial (distribuye productos)</option>
                   <option value="productora">Productora (fabrica con materias primas)</option>
                 </select>
               </div>

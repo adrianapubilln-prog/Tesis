@@ -193,11 +193,13 @@ function NewPurchase() {
         </div>
 
         <h3 style={{ marginTop: 18, marginBottom: 12 }}>Agregar producto</h3>
-        <div className="field-row">
        <div className="field">
     <label>Producto del inventario</label>
     <select value={selProduct}onChange={(e) => {const productId = e.target.value setSelProduct(productId) if (productId) {setManualName('') const product = products.find((p) => p.id === productId) if (product) {setUnitCost(Number(product.cost) || 0)}} else {setUnitCost(0)}}}>
-      <option value="">— Seleccione el producto —</option> {products.map((p) => (<option key={p.id} value={p.id} {p.name} (stock: {p.stock}) </option>))}
+      <option value="">— Seleccione el producto —</option> 
+      {products.map((p) => (
+        <option key={p.id} value={p.id}> {p.name} (stock: {p.stock}) </option>
+      ))}
     </select>
    </div>
   

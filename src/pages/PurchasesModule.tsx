@@ -164,7 +164,7 @@ function NewPurchase() {
         {!supplierId && (
           <div className="field-row">
             <div className="field">
-              <label>Nombre del contacto *</label>
+              <label>Nombre del contacto</label>
               <input value={newContact} onChange={(e) => setNewContact(e.target.value)} placeholder="Nombre del proveedor" />
             </div>
             <div className="field">
@@ -196,15 +196,14 @@ function NewPurchase() {
         <div className="field-row">
           <div className="field">
             <label>Producto del inventario</label>
-            <select value={selProduct} onChange={(e) => { setSelProduct(e.target.value); if (e.target.value) setManualName('') }}>
-              <option value="">— Escribir manualmente —</option>
+          <select value={selProduct} onChange={(e) => {const productId = e.target.value} setSelProduct(productId) if (productId) {setManualName('') const product = products.find( (p) => p.id === productId) if (product) {setUnitCost(Number(product.cost) || 0)}} else {setUnitCost(0)}}}>
               {products.map((p) => (
                 <option key={p.id} value={p.id}>{p.name} (stock: {p.stock})</option>
               ))}
             </select>
           </div>
           <div className="field">
-            <label>Nombre del producto *</label>
+            <label>Nombre del producto</label>
             <input value={manualName} onChange={(e) => { setManualName(e.target.value); if (e.target.value) setSelProduct('') }} placeholder="Nombre" disabled={!!selProduct} />
           </div>
         </div>
@@ -215,7 +214,7 @@ function NewPurchase() {
           </div>
           <div className="field">
             <label>Precio unitario ($)</label>
-            <input type="number" min={0} step="0.01" value={unitCost} onChange={(e) => setUnitCost(Number(e.target.value))} />
+            <input type="number" value={unitCost} readOnly />
           </div>
           <div className="field" style={{ display: 'flex', alignItems: 'flex-end' }}>
             <button className="btn btn-ghost" style={{ width: '100%' }} onClick={addItem}>+ Agregar</button>
@@ -704,7 +703,7 @@ function SupplierForm({ existing, onCancel, onSaved }: { existing: Supplier | nu
       <h3 style={{ marginBottom: 14 }}>{existing ? 'Editar proveedor' : 'Nuevo proveedor'}</h3>
       <div className="field-row">
         <div className="field">
-          <label>Nombre del contacto *</label>
+          <label>Nombre del contacto</label>
           <input value={contactName} onChange={(e) => setContactName(e.target.value)} />
         </div>
         <div className="field">

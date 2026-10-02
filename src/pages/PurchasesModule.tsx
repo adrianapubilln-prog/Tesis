@@ -192,23 +192,55 @@ function NewPurchase() {
           <textarea rows={2} value={observations} onChange={(e) => setObservations(e.target.value)} />
         </div>
 
-        <h3 style={{ marginTop: 18, marginBottom: 12 }}>Agregar producto</h3>
-       <div className="field">
-    <label>Producto del inventario</label>
-    <select value={selProduct}onChange={(e) => {const productId = e.target.value setSelProduct(productId) if (productId) {setManualName('') const product = products.find((p) => p.id === productId) if (product) {setUnitCost(Number(product.cost) || 0)}} else {setUnitCost(0)}}}>
-      <option value="">— Seleccione el producto —</option> 
-      {products.map((p) => (
-        <option key={p.id} value={p.id}> {p.name} (stock: {p.stock}) </option>
-      ))}
-    </select>
-   </div>
-  
+    <h3 style={{ marginTop: 18, marginBottom: 12 }}> Agregar producto </h3>
 
-  <div className="field">
-    <label>Nombre del producto</label>
-   <input value={manualName} onChange={(e) => {setManualName(e.target.value) if (e.target.value) {setSelProduct('') setUnitCost(0)}}}placeholder="Nombre" disabled={!!selProduct}
-    />
-  </div>
+<div className="field">
+  <label>Producto del inventario</label>
+
+  <select
+    value={selProduct}
+    onChange={(e) => {
+      const productId = e.target.value
+
+      setSelProduct(productId)
+
+      if (productId) {
+        const product = products.find(
+          (p) => p.id === productId
+        )
+
+        if (product) {
+          setUnitCost(Number(product.cost) || 0)
+        }
+      } else {
+        setUnitCost(0)
+      }
+    }}
+  >
+    <option value="">
+      — Seleccione el producto —
+    </option>
+
+    {products.map((p) => (
+      <option key={p.id} value={p.id}>
+        {p.name} (stock: {p.stock})
+      </option>
+    ))}
+  </select>
+</div>
+
+<div className="field">
+  <label>Precio unitario ($)</label>
+
+  <input
+    type="number"
+    value={unitCost.toFixed(2)}
+    readOnly
+  />
+
+  <small className="muted">
+    Precio obtenido automáticamente del inventario
+  </small>
 </div>
 
 <div className="field-row">

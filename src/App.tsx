@@ -65,7 +65,7 @@ function FullScreenLoader() {
     <div style={{ display: 'grid', placeItems: 'center', height: '100vh' }}>
       <div style={{ textAlign: 'center' }}>
         <div className="logo-mark" style={{ margin: '0 auto 16px' }}>P</div>
-        <p className="muted">Cargando PYMESV…</p>
+        <p className="muted">Cargando MYPESV…</p>
       </div>
     </div>
   )

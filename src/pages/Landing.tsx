@@ -35,7 +35,7 @@ export default function Landing() {
         </div>
       </main>
       <footer className="muted" style={{ textAlign: 'center', padding: '24px', fontSize: 13 }}>
-        © {new Date().getFullYear()} PYMESV · El Salvador
+        © {new Date().getFullYear()} MYPESV · El Salvador
       </footer>
     </div>
   )

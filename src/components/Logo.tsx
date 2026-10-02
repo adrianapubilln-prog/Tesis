@@ -4,9 +4,9 @@ export default function Logo({ size = 40 }: { size?: number }) {
       <div
         className="logo-mark"
         style={{ width: size, height: size, fontSize: size * 0.5 }}
-      >P</div>
+      >M</div>
       <div style={{ lineHeight: 1.1 }}>
-        <div style={{ fontWeight: 700, letterSpacing: '0.5px' }}>PYMESV</div>
+        <div style={{ fontWeight: 700, letterSpacing: '0.5px' }}>MYPESV</div>
         <div style={{ fontSize: 11, color: 'var(--text-dim)' }}>Gestión para mipymes</div>
       </div>
     </div>

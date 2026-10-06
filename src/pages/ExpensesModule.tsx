@@ -167,7 +167,7 @@ function NewExpense() {
         <h3 style={{ marginBottom: 14 }}>Datos del gasto</h3>
         <div className="field-row">
           <div className="field">
-            <label>Categoría *</label>
+            <label>Categoría</label>
             <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
               <option value="">— Selecciona —</option>
               {categories.map((c) => (
@@ -186,7 +186,7 @@ function NewExpense() {
           </div>
         </div>
         <div className="field">
-          <label>Descripción *</label>
+          <label>Descripción</label>
           <input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Ej. Pago de electricidad" />
         </div>
         <div className="field-row">

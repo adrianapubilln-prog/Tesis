@@ -25,7 +25,7 @@ export type Business = {
 
 export type Role = 'administrador' | 'contador' | 'gerente' | 'auxiliar' | 'vendedor' | 'auditor'
 
-export type ModuleKey = 'dashboard' | 'ventas' | 'compras' | 'gastos' | 'inventario' | 'clientes_proveedores' | 'reportes' | 'configuracion' | 'usuarios'
+export type ModuleKey = 'dashboard' | 'ventas' | 'compras' | 'gastos' | 'inventario' | 'clientes_proveedores' | 'reportes' | 'configuracion' | 'usuarios' | 'ia'
 
 export type Permission = 'full' | 'view' | null
 

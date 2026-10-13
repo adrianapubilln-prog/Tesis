@@ -16,6 +16,7 @@ const MODULE_LABELS: Record<ModuleKey, string> = {
   reportes: 'Reportes',
   configuracion: 'Configuración',
   usuarios: 'Usuarios',
+  ia: 'Modulo IA',
 }
 
 const MODULE_ORDER: ModuleKey[] = ['dashboard', 'ventas', 'compras', 'gastos', 'inventario', 'clientes_proveedores', 'reportes', 'usuarios', 'configuracion']

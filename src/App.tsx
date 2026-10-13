@@ -14,6 +14,7 @@ import UsersModule from './pages/UsersModule'
 import ConfigModule from './pages/ConfigModule'
 import ReportsModule from './pages/ReportsModule'
 import type { ModuleKey } from './lib/supabase'
+import AIModule from './pages/AIModule'
 
 function Guard({ module, children }: { module: ModuleKey; children: React.ReactNode }) {
   const { canAccess } = useAuth()
@@ -38,6 +39,7 @@ function Protected() {
         <Route path="/usuarios" element={<Guard module="usuarios"><UsersModule /></Guard>} />
         <Route path="/configuracion" element={<Guard module="configuracion"><ConfigModule /></Guard>} />
         <Route path="/reportes" element={<Guard module="reportes"><ReportsModule /></Guard>} />
+        <Route path="/ia" element={<Guard module="ia"><AIModule /></Guard>}/>
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </AppShell>
@@ -65,7 +67,7 @@ function FullScreenLoader() {
     <div style={{ display: 'grid', placeItems: 'center', height: '100vh' }}>
       <div style={{ textAlign: 'center' }}>
         <div className="logo-mark" style={{ margin: '0 auto 16px' }}>P</div>
-        <p className="muted">Cargando MYPESV…</p>
+        <p className="muted">Cargando PYMESV…</p>
       </div>
     </div>
   )

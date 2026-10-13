@@ -22,32 +22,32 @@ const DEFAULT_PERMISSIONS: Record<Role, Permissions> = {
   administrador: {
     dashboard: 'full', ventas: 'full', compras: 'full', gastos: 'full',
     inventario: 'full', clientes_proveedores: 'full', reportes: 'full',
-    configuracion: 'full', usuarios: 'full',
+    configuracion: 'full', usuarios: 'full', ia: 'full',
   },
   contador: {
     dashboard: 'full', ventas: 'full', compras: 'full', gastos: 'full',
     inventario: 'full', clientes_proveedores: 'full', reportes: 'full',
-    configuracion: 'view', usuarios: null,
+    configuracion: 'view', usuarios: null, ia: 'view',
   },
   gerente: {
     dashboard: 'full', ventas: 'full', compras: 'view', gastos: 'full',
     inventario: 'full', clientes_proveedores: 'view', reportes: 'full',
-    configuracion: 'view', usuarios: null,
+    configuracion: 'view', usuarios: null, ia: 'full',
   },
   auxiliar: {
     dashboard: 'view', ventas: 'full', compras: 'full', gastos: 'full',
     inventario: 'view', clientes_proveedores: 'full', reportes: null,
-    configuracion: null, usuarios: null,
+    configuracion: null, usuarios: null, ia: null,
   },
   vendedor: {
     dashboard: 'view', ventas: 'full', compras: null, gastos: null,
     inventario: 'view', clientes_proveedores: 'view', reportes: null,
-    configuracion: null, usuarios: null,
+    configuracion: null, usuarios: null, ia: null,
   },
   auditor: {
     dashboard: 'view', ventas: 'view', compras: 'view', gastos: 'view',
     inventario: 'view', clientes_proveedores: 'view', reportes: 'view',
-    configuracion: null, usuarios: null,
+    configuracion: null, usuarios: null, ia: 'view',
   },
 }
 

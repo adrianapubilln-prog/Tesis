@@ -17,7 +17,7 @@ const NAV_ITEMS: NavDef[] = [
   { to: '/usuarios', label: 'Usuarios', module: 'usuarios' },
   { to: '/configuracion', label: 'Configuración', module: 'configuracion' },
   { to: '/reportes', label: 'Reportes', module: 'reportes' },
-  { label: 'Módulo IA', module: 'reportes', disabled: true },
+  { to: '/ia', label: 'Módulo IA', module: 'ia' },
 ]
 
 export default function AppShell({ children }: { children: ReactNode }) {

@@ -37,31 +37,62 @@ export default function ReportsModule() {
   const [movements, setMovements] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
-  const load = useCallback(() => {
-    if (!business) return
-    setLoading(true)
-    Promise.all([
-      fetchSales(business.id),
-      fetchPurchases(business.id),
-      fetchExpenses(business.id),
-      fetchProducts(business.id),
-      fetchClients(business.id),
-      fetchSuppliers(business.id),
-      fetchPayroll(business.id),
-      fetchMovements(business.id),
-    ]).then(([s, p, e, pr, c, sup, pay, mv]) => {
-      setSales(s)
-      setPurchases(p)
-      setExpenses(e)
-      setProducts(pr)
-      setClients(c)
-      setSuppliers(sup)
-      setPayroll(pay)
-      setMovements(mv)
-    }).catch(() => {}).finally(() => setLoading(false))
-  }, [business])
+  
+const load = useCallback(async () => {
+  if (!business?.id) {
+    setLoading(false)
+    return
+  }
 
-  useEffect(load, [load])
+  setLoading(true)
+
+  const resultados = await Promise.allSettled([
+    fetchSales(business.id),
+    fetchPurchases(business.id),
+    fetchExpenses(business.id),
+    fetchProducts(business.id),
+    fetchClients(business.id),
+    fetchSuppliers(business.id),
+    fetchPayroll(business.id),
+    fetchMovements(business.id),
+  ] as const)
+
+  const nombres = [
+    'Ventas',
+    'Compras',
+    'Gastos',
+    'Productos',
+    'Clientes',
+    'Proveedores',
+    'Planilla',
+    'Movimientos de inventario',
+  ]
+
+  resultados.forEach((resultado, indice) => {
+    if (resultado.status === 'rejected') {
+      console.error(
+        `Error al cargar ${nombres[indice]}:`,
+        resultado.reason
+      )
+    }
+  })
+
+  if (resultados[0].status === 'fulfilled') setSales(resultados[0].value)
+  if (resultados[1].status === 'fulfilled') setPurchases(resultados[1].value)
+  if (resultados[2].status === 'fulfilled') setExpenses(resultados[2].value)
+  if (resultados[3].status === 'fulfilled') setProducts(resultados[3].value)
+  if (resultados[4].status === 'fulfilled') setClients(resultados[4].value)
+  if (resultados[5].status === 'fulfilled') setSuppliers(resultados[5].value)
+  if (resultados[6].status === 'fulfilled') setPayroll(resultados[6].value)
+  if (resultados[7].status === 'fulfilled') setMovements(resultados[7].value)
+
+  setLoading(false)
+}, [business?.id])
+
+useEffect(() => {
+  void load()
+}, [load])
+
 
   const periodLabel = formatPeriod(period)
 

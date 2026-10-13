@@ -1,0 +1,530 @@
+{
+    "intenciones": [
+        {
+            "etiqueta": "saludo",
+            "patrones": [
+                "Hola",
+                "Buenas",
+                "Qué tal",
+                "Hola, cómo estás",
+                "Hola, necesito ayuda",
+                "Hola, quiero ayuda",
+                "Hola chatbot",
+                "Hola Chatty",
+                "Buenos días",
+                "Buenas tardes",
+                "Buenas noches",
+                "Buen día",
+                "Saludos",
+                "Hey",
+                "Hola, me puedes ayudar",
+                "Hola, necesito consultar algo",
+                "Quiero hacer una consulta",
+                "Necesito información"
+            ],
+            "respuestas": [
+                "¡Hola! ¿Cómo puedo ayudarte con la información de tu negocio?",
+                "¡Hola! Puedes realizar una consulta utilizando las opciones disponibles.",
+                "¡Hola! Estoy aquí para ayudarte a consultar la información de tu negocio."
+            ]
+        },
+        {
+            "etiqueta": "despedida",
+            "patrones": [
+                "Adiós",
+                "Hasta luego",
+                "Nos vemos",
+                "Salu",
+                "Gracias, adiós",
+                "Gracias, salu",
+                "Hasta pronto",
+                "Me voy",
+                "Eso es todo",
+                "Ya terminé",
+                "Terminamos",
+                "No necesito más",
+                "Eso sería todo",
+                "Nos vemos después",
+                "Hasta la próxima"
+            ],
+            "respuestas": [
+                "¡Hasta luego!",
+                "¡Adiós! Que tengas un buen día.",
+                "Con gusto. ¡Hasta luego!"
+            ]
+        },
+        {
+            "etiqueta": "agradecimiento",
+            "patrones": [
+                "Gracias",
+                "Muchas gracias",
+                "Te agradezco",
+                "Gracias por tu ayuda",
+                "Gracias por la ayuda",
+                "Gracias por la información",
+                "Muchas gracias por ayudarme",
+                "Te agradezco la ayuda",
+                "Excelente, gracias",
+                "Perfecto, gracias",
+                "Me sirvió, gracias",
+                "Muy amable",
+                "Gracias chatbot",
+                "Gracias Chatty"
+            ],
+            "respuestas": [
+                "¡De nada! Estoy aquí para ayudarte.",
+                "Con gusto.",
+                "¡Para eso estoy! Puedes realizar otra consulta cuando quieras."
+            ]
+        },
+        {
+            "etiqueta": "informacion",
+            "patrones": [
+                "Cuál es tu nombre",
+                "Cómo te llamas",
+                "Quién eres",
+                "Qué eres",
+                "Qué puedes hacer",
+                "Qué puedes consultar",
+                "Qué información tienes",
+                "Qué información puedes mostrarme",
+                "Qué consultas puedo hacer",
+                "Qué preguntas puedo hacerte",
+                "Para qué sirves",
+                "Cómo puedes ayudarme",
+                "Qué funciones tienes",
+                "Qué opciones tienes",
+                "Qué puedo preguntarte",
+                "Cómo funciona el chatbot",
+                "Qué haces",
+                "Qué información manejas"
+            ],
+            "respuestas": [
+                "Soy Chatty, un asistente diseñado para ayudarte a consultar información de tu negocio.",
+                "Soy un chatbot de consulta empresarial. Puedo ayudarte con ingresos, gastos, ganancias, cuentas por cobrar, cuentas por pagar e inventario.",
+                "Puedo ayudarte a consultar diferentes indicadores y movimientos de tu negocio mediante las opciones disponibles."
+            ]
+        },
+
+        {
+            "etiqueta": "ingresos_mes",
+            "patrones": [
+                "Cuáles son mis ingresos de este mes",
+                "Cuánto he ganado este mes",
+                "Cuánto dinero he generado este mes",
+                "Cuánto vendí este mes",
+                "Cuánto llevo vendido este mes",
+                "Cuáles han sido mis ingresos",
+                "Cuánto dinero he recibido este mes",
+                "Cuánto ingresé este mes",
+                "Cuánto dinero generé este mes",
+                "Cuál es mi total de ingresos",
+                "Cuánto tengo de ingresos este mes",
+                "Cuánto he vendido",
+                "Cuánto dinero he hecho este mes",
+                "Cuánto he generado",
+                "Cuánto llevo generado",
+                "Cuánto llevo de ventas",
+                "Cuál ha sido mi ingreso",
+                "Muéstrame mis ingresos",
+                "Quiero ver mis ingresos",
+                "Necesito saber mis ingresos",
+                "Dime cuánto he ganado",
+                "Dime cuánto he vendido",
+                "Cómo van mis ingresos",
+                "Cómo van mis ventas",
+                "Cuál es el total vendido este mes",
+                "Cuál es mi ingreso mensual"
+            ],
+            "respuestas": [
+                "Tus ingresos del mes actual corresponden al total generado por las ventas registradas durante este período.",
+                "En este momento, tus ingresos se calcularían a partir de las ventas registradas durante el mes actual.",
+                "La consulta de ingresos muestra el monto total generado por las ventas del mes y la cantidad de ventas realizadas."
+            ]
+        },
+
+        {
+            "etiqueta": "gastos_mes",
+            "patrones": [
+                "Cuánto he gastado este mes",
+                "Cuáles son mis gastos de este mes",
+                "Cuánto dinero he gastado",
+                "Cuánto llevo gastado este mes",
+                "Cuáles han sido mis gastos",
+                "Cuál es mi total de gastos",
+                "Cuánto dinero he gastado este mes",
+                "Muéstrame mis gastos del mes",
+                "Quiero ver mis gastos",
+                "Necesito saber mis gastos",
+                "Dime cuánto he gastado",
+                "Cuánto llevo gastando",
+                "Cuánto gasto este mes",
+                "Cuál ha sido mi gasto",
+                "Cuáles son mis gastos actuales",
+                "Cómo van mis gastos",
+                "Cuánto dinero he utilizado en gastos",
+                "Muéstrame cuánto he gastado",
+                "Quiero consultar mis gastos",
+                "Dime mis gastos del mes"
+            ],
+            "respuestas": [
+                "Tus gastos del mes corresponden al total de gastos registrados durante este período.",
+                "La consulta de gastos permite conocer cuánto has gastado durante el mes y cómo se distribuyen esos gastos.",
+                "Aquí puedes consultar el monto total de gastos registrados durante el mes actual."
+            ]
+        },
+
+        {
+            "etiqueta": "ganancia_neta",
+            "patrones": [
+                "Cuál es mi ganancia neta",
+                "Cuánto es mi ganancia neta",
+                "Cuál es mi ganancia de este mes",
+                "Cuánto he ganado realmente",
+                "Cuál es mi beneficio este mes",
+                "Cuánto me queda después de los gastos",
+                "Cuánto gano después de pagar los gastos",
+                "Cuál es mi resultado neto",
+                "Cuánto dinero me queda",
+                "Cuál es mi ganancia",
+                "Cuánto gané este mes",
+                "Cuál es mi utilidad",
+                "Cuál es mi utilidad neta",
+                "Dime mi ganancia",
+                "Quiero saber mi ganancia",
+                "Cuánto me queda de ganancia",
+                "Cuánto gano realmente",
+                "Cuál es el beneficio de mi negocio",
+                "Cómo está mi ganancia",
+                "Cuál es mi resultado del mes"
+            ],
+            "respuestas": [
+                "Tu ganancia neta se obtiene restando los gastos totales a los ingresos registrados durante el período.",
+                "La ganancia neta representa el resultado obtenido después de descontar los gastos de los ingresos.",
+                "Para conocer tu ganancia neta se consideran los ingresos y gastos registrados durante el mes."
+            ]
+        },
+
+        {
+            "etiqueta": "cuentas_por_cobrar",
+            "patrones": [
+                "Cuánto me deben mis clientes",
+                "Cuánto dinero me deben",
+                "Cuánto tengo pendiente de cobro",
+                "Cuánto tengo por cobrar",
+                "Cuáles clientes me deben",
+                "Cuánto dinero tengo pendiente de cobrar",
+                "Muéstrame mis cuentas por cobrar",
+                "Qué clientes tienen deudas",
+                "Quién me debe dinero",
+                "Quiénes me deben",
+                "Cuánto me deben",
+                "Cuánto tengo que cobrar",
+                "Qué tengo pendiente de cobrar",
+                "Cuáles son mis cuentas por cobrar",
+                "Quiero consultar mis cuentas por cobrar",
+                "Dime cuánto me deben mis clientes",
+                "Tengo dinero pendiente de cobro",
+                "Hay clientes que me deben",
+                "Qué clientes tienen pagos pendientes",
+                "Cuáles son mis cobros pendientes"
+            ],
+            "respuestas": [
+                "Puedes consultar el monto total pendiente de cobro y los clientes que tienen facturas pendientes.",
+                "Esta consulta permite conocer cuánto dinero tienes pendiente de cobrar a tus clientes.",
+                "Aquí puedes consultar tus cuentas por cobrar y los clientes asociados a pagos pendientes."
+            ]
+        },
+
+        {
+            "etiqueta": "cuentas_por_pagar",
+            "patrones": [
+                "Cuánto debo a mis proveedores",
+                "Cuánto dinero debo",
+                "Cuánto tengo pendiente de pago",
+                "Cuánto tengo por pagar",
+                "Cuáles proveedores tienen pagos pendientes",
+                "Cuánto debo a los proveedores",
+                "Muéstrame mis cuentas por pagar",
+                "Qué facturas tengo pendientes",
+                "A quién le debo dinero",
+                "A quiénes debo",
+                "Cuánto debo",
+                "Qué tengo pendiente de pagar",
+                "Cuánto dinero tengo que pagar",
+                "Cuáles son mis cuentas por pagar",
+                "Quiero consultar mis cuentas por pagar",
+                "Dime cuánto debo a mis proveedores",
+                "Tengo pagos pendientes",
+                "Qué proveedores están pendientes de pago",
+                "Cuáles son mis pagos pendientes",
+                "Qué facturas debo pagar"
+            ],
+            "respuestas": [
+                "Puedes consultar el monto total pendiente de pago y las facturas asociadas a tus proveedores.",
+                "Esta consulta permite conocer cuánto dinero tienes pendiente de pagar a tus proveedores.",
+                "Aquí puedes consultar tus cuentas por pagar y las facturas pendientes."
+            ]
+        },
+
+        {
+            "etiqueta": "valor_inventario",
+            "patrones": [
+                "Cuál es el valor de mi inventario",
+                "Cuánto vale mi inventario",
+                "Cuál es el valor total del inventario",
+                "Cuánto dinero tengo en inventario",
+                "Cuánto valen mis productos",
+                "Cuál es el valor de todos mis productos",
+                "Cuánto tengo invertido en inventario",
+                "Muéstrame el valor del inventario",
+                "Quiero saber cuánto vale mi inventario",
+                "Dime cuánto vale mi inventario",
+                "Cuánto dinero representa mi inventario",
+                "Cuál es el costo de mi inventario",
+                "Cuánto tengo almacenado",
+                "Cuál es el valor de mis existencias",
+                "Cuánto valen mis existencias",
+                "Quiero consultar el inventario",
+                "Cuánto dinero tengo en productos",
+                "Cuál es el total de mi inventario"
+            ],
+            "respuestas": [
+                "El valor del inventario corresponde al valor acumulado de los productos registrados y disponibles.",
+                "Puedes consultar el valor total de tu inventario con base en los productos registrados.",
+                "Esta consulta permite conocer cuánto representa económicamente el inventario actual."
+            ]
+        },
+
+        {
+            "etiqueta": "stock_bajo",
+            "patrones": [
+                "Qué productos tienen stock bajo",
+                "Cuáles productos tienen poco stock",
+                "Qué productos están por agotarse",
+                "Qué productos tienen pocas unidades",
+                "Muéstrame los productos con stock bajo",
+                "Qué productos necesitan reposición",
+                "Qué productos debo reponer",
+                "Cuáles productos tienen poca existencia",
+                "Qué productos tienen poco inventario",
+                "Cuáles productos están bajos",
+                "Qué productos se están agotando",
+                "Qué productos necesitan más unidades",
+                "Dime qué productos tienen poco stock",
+                "Quiero saber qué productos tienen stock bajo",
+                "Muéstrame los productos que debo reponer",
+                "Qué productos tienen existencias bajas",
+                "Cuáles productos están cerca de agotarse",
+                "Qué productos necesitan inventario",
+                "Qué debo reponer",
+                "Hay productos con poco stock"
+            ],
+            "respuestas": [
+                "Puedes consultar los productos que actualmente se encuentran por debajo del nivel de stock establecido.",
+                "Esta consulta permite identificar los productos que necesitan reposición.",
+                "Aquí puedes consultar los productos con existencias bajas y sus cantidades disponibles."
+            ]
+        },
+
+        {
+            "etiqueta": "productos_mas_vendidos",
+            "patrones": [
+                "Cuáles son mis productos más vendidos",
+                "Qué productos he vendido más",
+                "Cuáles son los productos más vendidos este mes",
+                "Qué productos tienen más ventas",
+                "Qué productos se venden más",
+                "Muéstrame mis productos más vendidos",
+                "Cuáles productos tienen mayor cantidad de ventas",
+                "Qué productos tienen más movimiento",
+                "Qué es lo que más vendo",
+                "Cuál es mi producto más vendido",
+                "Cuáles son los productos que más vendo",
+                "Qué productos tienen más salida",
+                "Qué productos tienen mayor demanda",
+                "Dime cuáles vendo más",
+                "Quiero saber qué productos vendo más",
+                "Cuáles tienen más ventas",
+                "Qué productos se han vendido más",
+                "Muéstrame los productos con más ventas",
+                "Cuál es el producto que más se vende",
+                "Qué productos tienen mayor cantidad vendida"
+            ],
+            "respuestas": [
+                "Puedes consultar los productos que han registrado la mayor cantidad de unidades vendidas durante el período.",
+                "Esta consulta permite identificar los productos con mayor volumen de ventas.",
+                "Aquí puedes consultar el ranking de productos según las unidades vendidas."
+            ]
+        },
+
+        {
+            "etiqueta": "comparacion_ingresos_gastos",
+            "patrones": [
+                "Cómo se comparan mis ingresos y gastos",
+                "Cómo han cambiado mis ingresos y gastos",
+                "Compara mis ingresos y gastos",
+                "Quiero comparar mis ingresos y gastos",
+                "Cómo han sido mis ingresos y gastos en los últimos meses",
+                "Muéstrame la comparación de ingresos y gastos",
+                "Cómo se comportan mis ingresos y gastos",
+                "Cuál ha sido la diferencia entre ingresos y gastos",
+                "Quiero comparar mis gastos con mis ingresos",
+                "Cómo van mis ingresos comparados con mis gastos",
+                "Qué diferencia hay entre ingresos y gastos",
+                "Cómo están mis ingresos y gastos",
+                "Compara lo que gano con lo que gasto",
+                "Quiero ver ingresos contra gastos",
+                "Cómo han variado mis ingresos y gastos",
+                "Dime cómo se comparan mis ingresos y gastos",
+                "Cómo han sido mis ingresos frente a mis gastos",
+                "Quiero analizar mis ingresos y gastos",
+                "Muéstrame ingresos y gastos de los últimos meses"
+            ],
+            "respuestas": [
+                "Puedes consultar una comparación entre los ingresos y gastos registrados durante los últimos meses.",
+                "Esta consulta permite observar cómo se han comportado tus ingresos y gastos en diferentes períodos.",
+                "Aquí puedes comparar los ingresos obtenidos con los gastos registrados durante los últimos meses."
+            ]
+        },
+
+        {
+            "etiqueta": "utilidad_mes_anterior",
+            "patrones": [
+                "Cuál fue mi utilidad del mes pasado",
+                "Cuánto gané el mes pasado",
+                "Cuál fue mi ganancia del mes anterior",
+                "Cuánto fue mi utilidad anterior",
+                "Cuánto gané el mes anterior",
+                "Cuál fue mi resultado del mes pasado",
+                "Cuál fue mi beneficio del mes anterior",
+                "Cuánto gané el mes pasado",
+                "Dime mi utilidad del mes pasado",
+                "Quiero saber cuánto gané el mes anterior",
+                "Cuál fue mi ganancia anterior",
+                "Cuánto me quedó el mes pasado",
+                "Cuál fue mi beneficio el mes pasado",
+                "Cómo me fue el mes pasado",
+                "Cuál fue mi resultado anterior",
+                "Quiero consultar la utilidad del mes anterior",
+                "Dime cuánto gané el mes pasado",
+                "Cuánto obtuve el mes anterior"
+            ],
+            "respuestas": [
+                "La utilidad del mes anterior corresponde a la diferencia entre los ingresos y gastos registrados durante ese período.",
+                "Puedes consultar el resultado neto obtenido durante el mes anterior.",
+                "Esta consulta permite conocer la utilidad correspondiente al período anterior."
+            ]
+        },
+
+        {
+            "etiqueta": "ultimas_transacciones",
+            "patrones": [
+                "Cuáles fueron mis últimas transacciones",
+                "Muéstrame mis últimas transacciones",
+                "Qué transacciones he registrado recientemente",
+                "Cuáles son mis movimientos recientes",
+                "Qué operaciones he realizado recientemente",
+                "Muéstrame mis últimos movimientos",
+                "Cuáles fueron mis últimos registros",
+                "Qué registré recientemente",
+                "Qué movimientos tengo recientes",
+                "Cuáles son mis transacciones recientes",
+                "Qué operaciones registré",
+                "Dime mis últimos movimientos",
+                "Quiero ver mis últimas transacciones",
+                "Qué fue lo último que registré",
+                "Cuál fue mi último movimiento",
+                "Muéstrame mis registros recientes",
+                "Qué ventas registré recientemente",
+                "Qué operaciones hice recientemente"
+            ],
+            "respuestas": [
+                "Puedes consultar las últimas transacciones registradas en el sistema.",
+                "Esta consulta permite visualizar los movimientos registrados más recientemente.",
+                "Aquí puedes consultar las últimas ventas, compras y gastos registrados."
+            ]
+        },
+
+        {
+            "etiqueta": "registrar_venta",
+            "patrones": [
+                "Quiero registrar una venta",
+                "Registrar una venta",
+                "Necesito registrar una venta",
+                "Quiero agregar una venta",
+                "Deseo registrar una venta",
+                "Agregar una venta",
+                "Nueva venta",
+                "Quiero hacer una venta",
+                "Necesito agregar una venta",
+                "Quiero ingresar una venta",
+                "Registrar nueva venta",
+                "Agregar nueva venta",
+                "Necesito registrar una nueva venta",
+                "Quiero guardar una venta",
+                "Deseo agregar una venta al sistema",
+                "Necesito registrar una operación de venta"
+            ],
+            "respuestas": [
+                "Para registrar una venta necesitarás ingresar los datos correspondientes de la operación.",
+                "Puedes registrar una nueva venta proporcionando la información solicitada.",
+                "El sistema puede ayudarte a iniciar el registro de una nueva venta."
+            ]
+        },
+
+        {
+            "etiqueta": "registrar_compra",
+            "patrones": [
+                "Quiero registrar una compra",
+                "Registrar una compra",
+                "Necesito registrar una compra",
+                "Quiero agregar una compra",
+                "Deseo registrar una compra",
+                "Agregar una compra",
+                "Nueva compra",
+                "Quiero hacer una compra",
+                "Necesito agregar una compra",
+                "Quiero ingresar una compra",
+                "Registrar nueva compra",
+                "Agregar nueva compra",
+                "Necesito registrar una nueva compra",
+                "Quiero guardar una compra",
+                "Deseo agregar una compra al sistema",
+                "Necesito registrar una operación de compra"
+            ],
+            "respuestas": [
+                "Para registrar una compra necesitarás ingresar los datos correspondientes de la operación.",
+                "Puedes registrar una nueva compra proporcionando la información solicitada.",
+                "El sistema puede ayudarte a iniciar el registro de una nueva compra."
+            ]
+        },
+
+        {
+            "etiqueta": "registrar_gasto",
+            "patrones": [
+                "Quiero registrar un gasto",
+                "Registrar un gasto",
+                "Necesito registrar un gasto",
+                "Quiero agregar un gasto",
+                "Deseo registrar un gasto",
+                "Agregar un gasto",
+                "Nuevo gasto",
+                "Quiero hacer un gasto",
+                "Necesito agregar un gasto",
+                "Quiero ingresar un gasto",
+                "Registrar nuevo gasto",
+                "Agregar nuevo gasto",
+                "Necesito registrar un nuevo gasto",
+                "Quiero guardar un gasto",
+                "Deseo agregar un gasto al sistema",
+                "Necesito registrar una operación de gasto"
+            ],
+            "respuestas": [
+                "Para registrar un gasto necesitarás ingresar los datos correspondientes de la operación.",
+                "Puedes registrar un nuevo gasto proporcionando la información solicitada.",
+                "El sistema puede ayudarte a iniciar el registro de un nuevo gasto."
+            ]
+        }
+    ]
+}

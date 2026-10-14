@@ -5,7 +5,20 @@ from intenciones import obtener_respuesta
 from supabase_ia import verificar_usuario, obtener_negocio_usuario
 app = Flask(__name__)
 
-CORS(app)
+CORS(
+app,
+resources={
+r&quot;/api/*&quot;: {
+&quot;origins&quot;: [
+&quot;http://localhost:5173&quot;,
+
+&quot;https://tesis-tesis9.vercel.app&quot;
+]
+}
+},
+allow_headers=[&quot;Content-Type&quot;, &quot;Authorization&quot;],
+methods=[&quot;GET&quot;, &quot;POST&quot;, &quot;OPTIONS&quot;]
+)
 
 
 @app.route("/api/ia/chat", methods=["POST"])
